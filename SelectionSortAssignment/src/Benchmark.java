@@ -49,11 +49,11 @@ public class Benchmark {
         Benchmark averageBenchmark = new Benchmark();
         for(int i = 0; i < benchmarks[0].getLogCount(); i++) {
             String text = benchmarks[0].benchmarkLogs.get(i).getMessage();
-            int sumOfTimeStamp = 0;
+            long averageTimeStamp = 0;
             for (Benchmark benchmark : benchmarks) {
-                sumOfTimeStamp += benchmark.benchmarkLogs.get(i).getTimeStamp();
+                //NOTE: We have to immediately divide the timestamp by the amount of benchmarks to prevent overflow!
+                averageTimeStamp += benchmark.benchmarkLogs.get(i).getTimeStamp()/benchmarks.length;
             }
-            int averageTimeStamp = (int)(sumOfTimeStamp/5);
 
             BenchmarkLog log = new BenchmarkLog(averageTimeStamp, text);
             averageBenchmark.benchmarkLogs.add(log);
