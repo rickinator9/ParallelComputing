@@ -9,7 +9,9 @@ public class SelectionSort implements ISortingAlgorithm {
         // TODO Multithread this!
         Benchmark benchmark = new Benchmark();
         benchmark.start();
-        int[] sortedArray = Arrays.copyOfRange(toBeSorted, 0, toBeSorted.length); // Duplicate this array in case we want to use it to sort multiple times(to get averages).
+
+        // Duplicate this array in case we want to use it to sort multiple times(to get averages).
+        int[] sortedArray = Arrays.copyOfRange(toBeSorted, 0, toBeSorted.length);
         benchmark.log("Duplicated array");
         for(int i = 0; i < sortedArray.length-1; i++) {
             int minimum = i;

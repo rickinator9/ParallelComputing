@@ -14,7 +14,15 @@ public class Benchmark {
     }
 
     public void log(String message) {
-        BenchmarkLog log = new BenchmarkLog(System.nanoTime()-startTime, message);
+        long timestampOfPrevious;
+        try {
+            BenchmarkLog log = benchmarkLogs.get(benchmarkLogs.size()-1);
+            timestampOfPrevious = log.getTimeStamp();
+        }
+        catch(ArrayIndexOutOfBoundsException ex) {
+            timestampOfPrevious = 0;
+        }
+        BenchmarkLog log = new BenchmarkLog(System.nanoTime()-timestampOfPrevious-startTime, message);
         benchmarkLogs.add(log);
     }
 
