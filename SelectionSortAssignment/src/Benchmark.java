@@ -29,15 +29,12 @@ public class Benchmark {
     public void print() {
         System.out.println("BENCHMARK PRINT");
 
-        long accumulatedTime = 0;
         for (BenchmarkLog log : benchmarkLogs) {
-            double millis = (log.getTimeStamp()-accumulatedTime)/1e6;
+            double millis = (log.getTimeStamp())/1e6;
 
             System.out.println(log.getMessage());
             System.out.println("Time: " + millis + "ms.");
             System.out.println();
-
-            accumulatedTime += log.getTimeStamp();
         }
     }
 

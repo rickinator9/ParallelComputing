@@ -5,6 +5,8 @@ import java.util.Random;
  */
 public class main {
     static final int SORT_COUNT = 5;
+    static final int ELEMENT_COUNT = 50000;
+    static final int THREAD_COUNT = 8;
 
     public static void PrintArray(int[] array) {
         System.out.print("Array: ");
@@ -18,10 +20,10 @@ public class main {
     }
 
     public static void main(String[] args) {
-        ISortingAlgorithm sort = new SelectionSort();
+        ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, THREAD_COUNT);
 
         Benchmark[] benchmarks = new Benchmark[SORT_COUNT];
-        int[] toBeSorted = generateRandomDataSet(10000);
+        int[] toBeSorted = generateRandomDataSet(ELEMENT_COUNT);
         //PrintArray(toBeSorted);
         for(int i = 0; i < SORT_COUNT; i++) {
             ISortingAlgorithm.SortingResults sortingResults = sort.sort(toBeSorted);
@@ -38,6 +40,7 @@ public class main {
     }
 
     private static boolean isDataSetSorted(int[] dataSet) {
+        if(dataSet.length != ELEMENT_COUNT) return false;
         for(int i = 0; i < dataSet.length-1; i++) {
             if(dataSet[i] > dataSet[i+1]) return false;
         }
