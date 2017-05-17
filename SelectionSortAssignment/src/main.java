@@ -18,10 +18,10 @@ public class main {
     }
 
     public static void main(String[] args) {
-        ISortingAlgorithm sort = new RickMultithreadedSelectionSort(16);
+        ISortingAlgorithm sort = new SelectionSort();
 
         Benchmark[] benchmarks = new Benchmark[SORT_COUNT];
-        int[] toBeSorted = generateRandomDataSet(200000, 10000, false);
+        int[] toBeSorted = generateRandomDataSet(10000);
         //PrintArray(toBeSorted);
         for(int i = 0; i < SORT_COUNT; i++) {
             ISortingAlgorithm.SortingResults sortingResults = sort.sort(toBeSorted);
@@ -44,22 +44,9 @@ public class main {
         return true;
     }
 
-    private static int[] generateRandomDataSet(int numElements, int maxValue, boolean allowNegativeValues) {
-        Random random = new Random();
-
-        int[] dataSet = new int[numElements];
-        for(int i = 0; i < numElements; i++) {
-            float randomFactor = random.nextFloat();
-
-            if(allowNegativeValues) {
-                // Multiply by 2 and negate by 1 to allow for negative values.
-                randomFactor *= 2.0f;
-                randomFactor -= 1.0f;
-            }
-
-            int randomValue = (int)((float) maxValue * randomFactor);
-            dataSet[i] = randomValue;
-        }
+    private static int[] generateRandomDataSet(int numElements) {
+        int[] dataSet = Utils.fillArray(numElements);
+        Utils.shuffleArray(dataSet);
 
         return dataSet;
     }
