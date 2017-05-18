@@ -5,8 +5,8 @@ import java.util.List;
  * Created by Rick on 20-4-2017.
  */
 public class main {
-    static final int ELEMENT_COUNT = 50000;
-    static final int THREAD_COUNT = 8;
+    static final int ELEMENT_COUNT = 100000;
+    static final int THREAD_COUNT = 1;
     private static final int SORT_COUNT = 1;
     private static EventProfiler profiler = new EventProfiler(true);
 
@@ -30,28 +30,32 @@ public class main {
 
 
     public static void main(String[] args) {
-        ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, THREAD_COUNT);
+        //ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, THREAD_COUNT);
 
         Benchmark[] benchmarks = new Benchmark[SORT_COUNT];
         int processors = Runtime.getRuntime().availableProcessors();
         System.out.println("Processors " + processors);
 
+        ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, processors);
+
         profiler.start();
 
         //A dataset will be generated and shuffled
-        int[] toBeSorted = generateRandomDataSet(10);
+        int[] toBeSorted = generateRandomDataSet(ELEMENT_COUNT);
 
         profiler.start();
 
         for (int i = 0; i < SORT_COUNT; i++) {
             ISortingAlgorithm.SortingResults sortingResults = sort.sort(toBeSorted);
-            profiler.log("Sorting");
+
             int[] sorted = sortingResults.getSortedData();  // Note that this method returns a new array.
             // toBeSorted is not changed in any way.
 
-
+            //Utils.printArray(toBeSorted);
+            profiler.start();
             System.out.println("Dataset is sorted: " + isDataSetSorted(sorted));
             profiler.log("Checking sorted array");
+            //Utils.printArray(sorted);
         }
     }
 }

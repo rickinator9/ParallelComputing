@@ -63,6 +63,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
     private int[] outDataSet;
     private ArrayList<Integer>[] listPerThread;
 
+
     public MultithreadedSelectionSort1(int minValue, int maxValue, int numThreads) {
         this.minValue = minValue;
         this.maxValue = maxValue;
@@ -75,8 +76,10 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
         outDataSet = new int[toBeSorted.length];
         listPerThread = new ArrayList[numThreads];
 
+        EventProfiler profiler = new EventProfiler(true);
         Benchmark benchmark = new Benchmark();
         benchmark.start();
+        profiler.start();
 
         SortingThread[] sortingThreads = new SortingThread[numThreads];
         int valuesPerThread = maxValue / numThreads;
@@ -96,6 +99,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
         }
 
         benchmark.log("Sorted values.");
+        profiler.log("Sorting values");
 
         MergingThread[] mergingThreads = new MergingThread[numThreads];
         int startIndexAccumulator = 0;
@@ -112,10 +116,10 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
             }
         }
 
-        benchmark.log("Merged values");
+      //  benchmark.log("Merged values");
+        profiler.log("merging values");
 
         SortingResults results = new SortingResults(benchmark, outDataSet);
-
         return results;
     }
 }
