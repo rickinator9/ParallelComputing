@@ -5,8 +5,8 @@ import java.util.List;
  * Created by Rick on 20-4-2017.
  */
 public class main {
-    static final int ELEMENT_COUNT = 100000;
-    static final int THREAD_COUNT = 1;
+    static final int ELEMENT_COUNT = 1000;
+    static final int THREAD_COUNT = 8;
     private static final int SORT_COUNT = 1;
     private static EventProfiler profiler = new EventProfiler(true);
 
@@ -30,7 +30,7 @@ public class main {
 
 
     public static void main(String[] args) {
-        //ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, THREAD_COUNT);
+       //ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, THREAD_COUNT);
 
         Benchmark[] benchmarks = new Benchmark[SORT_COUNT];
         int processors = Runtime.getRuntime().availableProcessors();

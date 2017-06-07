@@ -24,9 +24,9 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
 
             while(minValue <= maxValue) {
                 int smallest = Integer.MAX_VALUE;
-                for (int element :
-                        dataSet) {
+                for (int element : dataSet) {
                     if (element >= minValue && element <= maxValue && element < smallest) {
+
                         smallest = element;
                     }
                 }
@@ -37,6 +37,37 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
             }
         }
     }
+
+    // class extends thread and sorts from biggest to smallest
+    private class SortingThreadMaximum extends Thread{
+        private int id;
+        private int lastPos;
+        private int minValue, maxValue;
+        public SortingThreadMaximum(int id, int minValue, int maxValue) {
+            this.id = id;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+        }
+
+        @Override
+        public  void run(){
+            while(maxValue >= minValue){
+                int biggest = Integer.MAX_VALUE;
+                for (int element : dataSet){
+                    if (element >= maxValue && element <= minValue && element > biggest) {
+                        biggest = element;
+                    }
+                }
+                maxValue = biggest+1;
+                if (biggest == Integer.MAX_VALUE)
+                    break;
+                lastPos = listPerThread.length+1;
+                listPerThread[id].add(lastPos,biggest);
+                lastPos--;
+            }
+        }
+    }
+
     private class MergingThread extends Thread {
         private int id;
         private int startIndex;
@@ -82,9 +113,16 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
         profiler.start();
 
         SortingThread[] sortingThreads = new SortingThread[numThreads];
+        SortingThreadMaximum[] sortingThreadMaximums = new SortingThreadMaximum[numThreads];
+
         int valuesPerThread = maxValue / numThreads;
         int accumulatedValues = 0;
         for(int i = 0; i < numThreads; i++) {
+
+           // sortingThreads[1] = new SortingThread(i, accumulatedValues, accumulatedValues+valuesPerThread);
+            //sortingThreadMaximums[1] = new SortingThreadMaximum(2, accumulatedValues, accumulatedValues+valuesPerThread);
+
+
             sortingThreads[i] = new SortingThread(i, accumulatedValues, accumulatedValues+valuesPerThread);
             accumulatedValues+=valuesPerThread+1;
             listPerThread[i] = new ArrayList<>();
