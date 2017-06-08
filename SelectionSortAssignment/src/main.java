@@ -1,19 +1,19 @@
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Rick on 20-4-2017.
  */
 public class main {
-    static final int ELEMENT_COUNT = 1000;
+    static final int ELEMENT_COUNT = 100;
     static final int THREAD_COUNT = 8;
     private static final int SORT_COUNT = 1;
     private static EventProfiler profiler = new EventProfiler(true);
 
     private static boolean isDataSetSorted(int[] dataSet) {
-        if(dataSet.length != ELEMENT_COUNT) return false;
-        for(int i = 0; i < dataSet.length-1; i++) {
-            if(dataSet[i] > dataSet[i+1]) return false;
+        if (dataSet.length != ELEMENT_COUNT) return false;
+        for (int i = 0; i < dataSet.length - 1; i++) {
+            if (dataSet[i] > dataSet[i + 1]) {
+                System.out.println(i);
+                return false;
+            }
         }
         return true;
     }
@@ -30,13 +30,13 @@ public class main {
 
 
     public static void main(String[] args) {
-       //ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, THREAD_COUNT);
 
-        Benchmark[] benchmarks = new Benchmark[SORT_COUNT];
-        int processors = Runtime.getRuntime().availableProcessors();
-        System.out.println("Processors " + processors);
+        // int processors = Runtime.getRuntime().availableProcessors();
+        //System.out.println("Processors " + processors);
 
-        ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, processors);
+        //ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, THREAD_COUNT);
+        ISortingAlgorithm sort = new DoubleThreadedSelectionSort(0, ELEMENT_COUNT, 2);
+        //ISortingAlgorithm sort = new MultithreadedSelectionSort1(0, ELEMENT_COUNT, processors);
 
         profiler.start();
 
@@ -46,16 +46,15 @@ public class main {
         profiler.start();
 
         for (int i = 0; i < SORT_COUNT; i++) {
-            ISortingAlgorithm.SortingResults sortingResults = sort.sort(toBeSorted);
+            int[] sorted = sort.sort(toBeSorted);  // Note that this method returns a new array.
 
-            int[] sorted = sortingResults.getSortedData();  // Note that this method returns a new array.
             // toBeSorted is not changed in any way.
 
-            //Utils.printArray(toBeSorted);
+            Utils.printArray(toBeSorted);
             profiler.start();
             System.out.println("Dataset is sorted: " + isDataSetSorted(sorted));
             profiler.log("Checking sorted array");
-            //Utils.printArray(sorted);
+            Utils.printArray(sorted);
         }
     }
 }

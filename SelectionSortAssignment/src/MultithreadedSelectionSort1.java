@@ -1,11 +1,8 @@
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Queue;
 
 /**
  * Created by Rick on 16-5-2017.
- *
+ * <p>
  * Each thread puts elements in a range of values in their own list.
  * Other threads then merge these lists into an array.
  */
@@ -13,6 +10,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
     private class SortingThread extends Thread {
         private int id;
         private int minValue, maxValue;
+
         public SortingThread(int id, int minValue, int maxValue) {
             this.id = id;
             this.minValue = minValue;
@@ -22,7 +20,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
         @Override
         public void run() {
 
-            while(minValue <= maxValue) {
+            while (minValue <= maxValue) {
                 int smallest = Integer.MAX_VALUE;
                 for (int element : dataSet) {
                     if (element >= minValue && element <= maxValue && element < smallest) {
@@ -30,40 +28,10 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
                         smallest = element;
                     }
                 }
-                minValue = smallest+1;
-                if(smallest == Integer.MAX_VALUE)
+                minValue = smallest + 1;
+                if (smallest == Integer.MAX_VALUE)
                     break;
                 listPerThread[id].add(smallest);
-            }
-        }
-    }
-
-    // class extends thread and sorts from biggest to smallest
-    private class SortingThreadMaximum extends Thread{
-        private int id;
-        private int lastPos;
-        private int minValue, maxValue;
-        public SortingThreadMaximum(int id, int minValue, int maxValue) {
-            this.id = id;
-            this.minValue = minValue;
-            this.maxValue = maxValue;
-        }
-
-        @Override
-        public  void run(){
-            while(maxValue >= minValue){
-                int biggest = Integer.MAX_VALUE;
-                for (int element : dataSet){
-                    if (element >= maxValue && element <= minValue && element > biggest) {
-                        biggest = element;
-                    }
-                }
-                maxValue = biggest+1;
-                if (biggest == Integer.MAX_VALUE)
-                    break;
-                lastPos = listPerThread.length+1;
-                listPerThread[id].add(lastPos,biggest);
-                lastPos--;
             }
         }
     }
@@ -71,6 +39,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
     private class MergingThread extends Thread {
         private int id;
         private int startIndex;
+
         public MergingThread(int id, int startIndex) {
             this.id = id;
             this.startIndex = startIndex;
@@ -102,33 +71,28 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
     }
 
     @Override
-    public SortingResults sort(int[] toBeSorted) {
+    public int[] sort(int[] toBeSorted) {
         dataSet = toBeSorted;
         outDataSet = new int[toBeSorted.length];
         listPerThread = new ArrayList[numThreads];
 
         EventProfiler profiler = new EventProfiler(true);
-        Benchmark benchmark = new Benchmark();
-        benchmark.start();
         profiler.start();
 
         SortingThread[] sortingThreads = new SortingThread[numThreads];
-        SortingThreadMaximum[] sortingThreadMaximums = new SortingThreadMaximum[numThreads];
 
         int valuesPerThread = maxValue / numThreads;
         int accumulatedValues = 0;
-        for(int i = 0; i < numThreads; i++) {
-
-           // sortingThreads[1] = new SortingThread(i, accumulatedValues, accumulatedValues+valuesPerThread);
-            //sortingThreadMaximums[1] = new SortingThreadMaximum(2, accumulatedValues, accumulatedValues+valuesPerThread);
 
 
-            sortingThreads[i] = new SortingThread(i, accumulatedValues, accumulatedValues+valuesPerThread);
-            accumulatedValues+=valuesPerThread+1;
+        for (int i = 0; i < numThreads; i++) {
+
+            sortingThreads[i] = new SortingThread(i, accumulatedValues, accumulatedValues + valuesPerThread);
+            accumulatedValues += valuesPerThread + 1;
             listPerThread[i] = new ArrayList<>();
             sortingThreads[i].start();
         }
-        for(int i = 0; i < numThreads; i++) {
+        for (int i = 0; i < numThreads; i++) {
             try {
                 sortingThreads[i].join();
             } catch (InterruptedException e) {
@@ -136,17 +100,16 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
             }
         }
 
-        benchmark.log("Sorted values.");
         profiler.log("Sorting values");
 
         MergingThread[] mergingThreads = new MergingThread[numThreads];
         int startIndexAccumulator = 0;
-        for(int i = 0; i < numThreads; i++) {
+        for (int i = 0; i < numThreads; i++) {
             mergingThreads[i] = new MergingThread(i, startIndexAccumulator);
             startIndexAccumulator += listPerThread[i].size();
             mergingThreads[i].start();
         }
-        for(int i = 0; i < numThreads; i++) {
+        for (int i = 0; i < numThreads; i++) {
             try {
                 mergingThreads[i].join();
             } catch (InterruptedException e) {
@@ -154,10 +117,8 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
             }
         }
 
-      //  benchmark.log("Merged values");
         profiler.log("merging values");
 
-        SortingResults results = new SortingResults(benchmark, outDataSet);
-        return results;
+        return outDataSet;
     }
 }
