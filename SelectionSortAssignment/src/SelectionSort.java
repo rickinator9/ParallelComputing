@@ -5,14 +5,13 @@ import java.util.Arrays;
  */
 public class SelectionSort implements ISortingAlgorithm {
     @Override
-    public SortingResults sort(int[] toBeSorted) {
+    public int[] sort(int[] toBeSorted) {
         // TODO Multithread this!
-        Benchmark benchmark = new Benchmark();
-        benchmark.start();
+
 
         // Duplicate this array in case we want to use it to sort multiple times(to get averages).
         int[] sortedArray = Arrays.copyOfRange(toBeSorted, 0, toBeSorted.length);
-        benchmark.log("Duplicated array");
+
         for(int i = 0; i < sortedArray.length-1; i++) {
             int minimum = i;
 
@@ -28,8 +27,7 @@ public class SelectionSort implements ISortingAlgorithm {
                 sortedArray[minimum] = temp;
             }
         }
-        benchmark.log("Selectionsort done");
 
-        return new SortingResults(benchmark, sortedArray);
+        return sortedArray;
     }
 }
