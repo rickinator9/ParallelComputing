@@ -7,28 +7,6 @@ public class main {
     private static final int SORT_COUNT = 1;
     private static EventProfiler profiler = new EventProfiler(true);
 
-    private static boolean isDataSetSorted(int[] dataSet) {
-        if (dataSet.length != ELEMENT_COUNT) return false;
-        for (int i = 0; i < dataSet.length - 1; i++) {
-            if (dataSet[i] > dataSet[i + 1]) {
-                System.out.println(i);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static int[] generateRandomDataSet(int numElements) {
-        int[] dataSet = Utils.fillArray(numElements);
-        profiler.log("Filling array");
-        Utils.shuffleArray(dataSet);
-        profiler.log("Shuffling array");
-        System.out.println(" ");
-
-        return dataSet;
-    }
-
-
     public static void main(String[] args) {
 
         // int processors = Runtime.getRuntime().availableProcessors();
@@ -41,7 +19,7 @@ public class main {
         profiler.start();
 
         //A dataset will be generated and shuffled
-        int[] toBeSorted = generateRandomDataSet(ELEMENT_COUNT);
+        int[] toBeSorted = Utils.generateRandomDataSet(ELEMENT_COUNT);
 
         profiler.start();
 
@@ -52,7 +30,7 @@ public class main {
 
             Utils.printArray(toBeSorted);
             profiler.start();
-            System.out.println("Dataset is sorted: " + isDataSetSorted(sorted));
+            System.out.println("Dataset is sorted: " + Utils.isDataSetSorted(sorted, ELEMENT_COUNT));
             profiler.log("Checking sorted array");
             Utils.printArray(sorted);
         }

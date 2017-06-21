@@ -50,7 +50,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
             int i = startIndex;
             ArrayList<Integer> list = listPerThread[id];
 
-            while (!list.isEmpty()) {
+            while (!list.isEmpty() && i < outDataSet.length) {
                 outDataSet[i] = list.remove(0);
                 i++;
             }
@@ -73,7 +73,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
     @Override
     public int[] sort(int[] toBeSorted) {
         dataSet = toBeSorted;
-        outDataSet = new int[toBeSorted.length];
+        outDataSet = new int[maxValue-minValue];
         listPerThread = new ArrayList[numThreads];
 
         EventProfiler profiler = new EventProfiler(true);
@@ -81,13 +81,17 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
 
         SortingThread[] sortingThreads = new SortingThread[numThreads];
 
-        int valuesPerThread = maxValue / numThreads;
-        int accumulatedValues = 0;
-
+        int valuesPerThread = (maxValue-minValue) / numThreads;
+        int accumulatedValues = minValue;
 
         for (int i = 0; i < numThreads; i++) {
+            int min = accumulatedValues;
+            int max = accumulatedValues + valuesPerThread;
+            if(i+1 == numThreads) {
+                max = maxValue;
+            }
 
-            sortingThreads[i] = new SortingThread(i, accumulatedValues, accumulatedValues + valuesPerThread);
+            sortingThreads[i] = new SortingThread(i, min, max);
             accumulatedValues += valuesPerThread + 1;
             listPerThread[i] = new ArrayList<>();
             sortingThreads[i].start();
