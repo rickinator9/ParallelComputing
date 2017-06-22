@@ -10,10 +10,11 @@ public class Assignment3 {
     }
 
     private static void sort(int threads) {
-        sort(50000, threads);
-        sort(100000, threads);
-        sort(200000, threads);
-        sort(400000, threads);
+        sort(10000, threads);
+        sort(20000, threads);
+        sort(40000, threads);
+        sort(80000, threads);
+        sort(160000, threads);
     }
 
     private static void sort(int elements, int threads) {

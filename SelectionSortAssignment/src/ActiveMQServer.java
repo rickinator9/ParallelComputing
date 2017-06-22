@@ -16,9 +16,10 @@ public class ActiveMQServer {
         System.out.println("Number of Clients: " + numberOfClients);
 
         sort(10000, session);
-        sort(100000, session);
-        sort(200000, session);
-        sort(400000, session);
+        sort(20000, session);
+        sort(40000, session);
+        sort(80000, session);
+        sort(160000, session);
 
         connection.close();
     }

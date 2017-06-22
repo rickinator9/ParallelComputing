@@ -26,7 +26,7 @@ public class ActiveMQClient {
     private static void updateClientNumbers(Session session) throws JMSException {
         Destination clientNumberDestination = session.createQueue(ActiveMQGlobals.clientNumberQueue);
         MessageConsumer clientNumberConsumer = session.createConsumer(clientNumberDestination);
-        Message message = clientNumberConsumer.receive(10);
+        Message message = clientNumberConsumer.receive(1000);
         if(message == null) {
             clientId = 0;
         }
