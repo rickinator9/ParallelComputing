@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Created by Rick on 16-5-2017.
@@ -31,7 +34,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
                 minValue = smallest + 1;
                 if (smallest == Integer.MAX_VALUE)
                     break;
-                listPerThread[id].add(smallest);
+                queuePerThread[id].offer(smallest);
             }
         }
     }
@@ -48,10 +51,10 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
         @Override
         public void run() {
             int i = startIndex;
-            ArrayList<Integer> list = listPerThread[id];
+            Queue<Integer> queue = queuePerThread[id];
 
-            while (!list.isEmpty() && i < outDataSet.length) {
-                outDataSet[i] = list.remove(0);
+            while (!queue.isEmpty() && i < outDataSet.length) {
+                outDataSet[i] = queue.poll();
                 i++;
             }
         }
@@ -61,7 +64,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
     private int numThreads;
     private int[] dataSet;
     private int[] outDataSet;
-    private ArrayList<Integer>[] listPerThread;
+    private Queue<Integer>[] queuePerThread;
 
 
     public MultithreadedSelectionSort1(int minValue, int maxValue, int numThreads) {
@@ -74,7 +77,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
     public int[] sort(int[] toBeSorted) {
         dataSet = toBeSorted;
         outDataSet = new int[maxValue-minValue];
-        listPerThread = new ArrayList[numThreads];
+        queuePerThread = new Queue[numThreads];
 
         EventProfiler profiler = new EventProfiler(true);
         profiler.start();
@@ -93,7 +96,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
 
             sortingThreads[i] = new SortingThread(i, min, max);
             accumulatedValues += valuesPerThread + 1;
-            listPerThread[i] = new ArrayList<>();
+            queuePerThread[i] = new ConcurrentLinkedDeque<>();
             sortingThreads[i].start();
         }
         for (int i = 0; i < numThreads; i++) {
@@ -110,7 +113,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
         int startIndexAccumulator = 0;
         for (int i = 0; i < numThreads; i++) {
             mergingThreads[i] = new MergingThread(i, startIndexAccumulator);
-            startIndexAccumulator += listPerThread[i].size();
+            startIndexAccumulator += queuePerThread[i].size();
             mergingThreads[i].start();
         }
         for (int i = 0; i < numThreads; i++) {
