@@ -10,10 +10,8 @@ public class DoubleThreadedSelectionSort implements ISortingAlgorithm {
 
         @Override
         public void run() {
-
-                for (; minimumIndex < maximumIndex; minimumIndex++) {
-                    synchronized (this) {
-
+            for (; minimumIndex < maximumIndex; minimumIndex++) {
+                synchronized (this) {
                     int minimum = minimumIndex;
 
                     for (int j = minimumIndex + 1; j < maximumIndex+1; j++) {
@@ -37,10 +35,9 @@ public class DoubleThreadedSelectionSort implements ISortingAlgorithm {
 
         @Override
         public void run() {
-                for (; maximumIndex >= minimumIndex; maximumIndex--) {
-                    synchronized (this) {
+            for (; maximumIndex >= minimumIndex; maximumIndex--) {
+                synchronized (this) {
                     int maximum = maximumIndex;
-
 
                     for (int j = maximumIndex - 1; j >= minimumIndex; j--) {
                         if (dataSet[j] > dataSet[maximum]) {
@@ -55,7 +52,6 @@ public class DoubleThreadedSelectionSort implements ISortingAlgorithm {
                     }
                 }
             }
-
         }
     }
 

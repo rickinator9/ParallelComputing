@@ -22,7 +22,6 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
 
         @Override
         public void run() {
-
             while (minValue <= maxValue) {
                 int smallest = Integer.MAX_VALUE;
                 for (int element : dataSet) {
@@ -75,12 +74,13 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
 
     @Override
     public int[] sort(int[] toBeSorted) {
+        EventProfiler profiler = new EventProfiler(true);
+        profiler.start();
+
         dataSet = toBeSorted;
         outDataSet = new int[maxValue-minValue];
         queuePerThread = new Queue[numThreads];
 
-        EventProfiler profiler = new EventProfiler(true);
-        profiler.start();
 
         SortingThread[] sortingThreads = new SortingThread[numThreads];
 
@@ -99,6 +99,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
             queuePerThread[i] = new ConcurrentLinkedDeque<>();
             sortingThreads[i].start();
         }
+        profiler.log("CONSTANT starting threads.");
         for (int i = 0; i < numThreads; i++) {
             try {
                 sortingThreads[i].join();
@@ -107,7 +108,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
             }
         }
 
-        profiler.log("Sorting values");
+        profiler.log("PARALLEL Sorting values");
 
         MergingThread[] mergingThreads = new MergingThread[numThreads];
         int startIndexAccumulator = 0;
@@ -116,6 +117,8 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
             startIndexAccumulator += queuePerThread[i].size();
             mergingThreads[i].start();
         }
+
+        profiler.log("CONSTANT starting merge threads");
         for (int i = 0; i < numThreads; i++) {
             try {
                 mergingThreads[i].join();
@@ -124,7 +127,7 @@ public class MultithreadedSelectionSort1 implements ISortingAlgorithm {
             }
         }
 
-        profiler.log("merging values");
+        profiler.log("PARALLEL merging values");
 
         return outDataSet;
     }

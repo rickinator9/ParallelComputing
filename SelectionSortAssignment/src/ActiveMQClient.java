@@ -49,7 +49,7 @@ public class ActiveMQClient {
         while(true) {
             MessageConsumer consumer = session.createConsumer(clientTaskQueue);
             Message message = consumer.receive();
-            consumer.close(); // Close the consumer so it doesn't grab messages produced by the client.
+            consumer.close();
 
             if(message instanceof BytesMessage) {
                 BytesMessage bytesMessage = (BytesMessage)message;

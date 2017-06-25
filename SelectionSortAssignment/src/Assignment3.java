@@ -6,7 +6,7 @@ public class Assignment3 {
         sort(1);
         sort(2);
         sort(4);
-        sort(8);
+        //sort(8);
     }
 
     private static void sort(int threads) {
